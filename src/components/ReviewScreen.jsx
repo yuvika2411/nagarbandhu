@@ -10,29 +10,31 @@ export default function ReviewScreen() {
   const [name, setName] = useState("");
   const [reviews, setReviews] = useState([]);
 
-  // Demo reviews (used if no user reviews)
+  // Preloaded demo reviews
   const demoReviews = [
     {
       name: "Shilpi Arora",
-      comment: "My pothole complaint was resolved within 2 days. Great work!",
+      comment: "My Pothole was fixed in 2 days, thanks NagarBandhu!",
       rating: 5,
       avatar:
         "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100",
     },
     {
       name: "Mukul Garg",
-      comment: "Garbage cleared quickly. Impressive response time!",
+      comment: "Garbage cleared quickly, good work.",
       rating: 4,
       avatar:
         "https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=100",
     },
   ];
 
+  // Load reviews from localStorage (or show demo)
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("reviews")) || [];
-    setReviews(stored);
+    setReviews(stored.length ? stored : demoReviews);
   }, []);
 
+  // Handle review submission
   const handleSubmit = () => {
     if (!name || !comment || rating === 0) {
       alert("Please fill all fields and select a rating!");
@@ -65,7 +67,7 @@ export default function ReviewScreen() {
         <h1 className="text-xl font-bold text-gray-900">Write a Review</h1>
       </div>
 
-      {/* Name Input */}
+      {/* Input Section */}
       <input
         type="text"
         value={name}
@@ -104,12 +106,12 @@ export default function ReviewScreen() {
         Submit Review
       </button>
 
-      {/* Reviews Section */}
-      <div className="bg-white rounded-2xl shadow-lg p-5">
+      {/* All Reviews Section */}
+      {/* <div className="bg-white rounded-2xl shadow-lg p-5">
         <h2 className="text-lg font-bold text-gray-900 mb-4">All Reviews</h2>
 
         <div className="space-y-4">
-          {(reviews.length > 0 ? reviews : demoReviews).map((r, i) => (
+          {reviews.map((r, i) => (
             <div key={i} className="flex gap-3">
               <img
                 src={r.avatar}
@@ -139,7 +141,7 @@ export default function ReviewScreen() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

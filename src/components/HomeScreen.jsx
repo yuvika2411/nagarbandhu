@@ -1,10 +1,8 @@
 import { Camera, CheckCircle, Clock, TrendingUp, Menu, Search, Edit } from "lucide-react";
 import { useNavigate } from "./navigation";
-import { useEffect, useState } from "react";
 
 export default function HomeScreen() {
   const navigate = useNavigate();
-  const [reviews, setReviews] = useState([]);
 
   const stats = [
     { icon: CheckCircle, value: "1200+", label: "Issues Resolved" },
@@ -18,10 +16,30 @@ export default function HomeScreen() {
     { name: "Streetlights", count: 12, icon: "💡", color: "bg-emerald-100" },
   ];
 
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("reviews")) || [];
-    setReviews(stored);
-  }, []);
+  // ✅ Demo reviews shown by default
+  const reviews = [
+    {
+      name: "Shilpi Arora",
+      comment: "My Pothole was fixed in 2 days, thanks NagarBandhu!",
+      rating: 5,
+      avatar:
+        "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100",
+    },
+    {
+      name: "Mukul Garg",
+      comment: "Garbage cleared quickly, good work!",
+      rating: 4,
+      avatar:
+        "https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=100",
+    },
+    {
+      name: "Ananya Sharma",
+      comment: "Streetlights in my area were repaired within a week.",
+      rating: 5,
+      avatar:
+        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=100",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -34,8 +52,9 @@ export default function HomeScreen() {
             <Search className="w-6 h-6" />
           </div>
 
+          {/* Report Button */}
           <button
-            onClick={() => navigate("/upload")}
+            onClick={() => navigate("upload")}
             className="w-full bg-white/20 backdrop-blur-sm rounded-2xl p-6 flex items-center gap-4 hover:bg-white/30 transition-all"
           >
             <div className="bg-white/30 rounded-full p-3">
@@ -46,12 +65,12 @@ export default function HomeScreen() {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats Section */}
       <div className="max-w-md mx-auto px-4 -mt-4">
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
           <div className="grid grid-cols-3 gap-4">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
                 <stat.icon className="w-5 h-5 mx-auto mb-2 text-gray-600" />
                 <div className="text-lg font-bold text-gray-900">{stat.value}</div>
                 <div className="text-xs text-gray-500 mt-1">{stat.label}</div>
@@ -64,65 +83,62 @@ export default function HomeScreen() {
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Categories</h2>
           <div className="grid grid-cols-3 gap-4">
-            {categories.map((cat, i) => (
+            {categories.map((category, index) => (
               <button
-                key={i}
+                key={index}
                 className="flex flex-col items-center p-4 rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-md transition-all"
               >
                 <div
-                  className={`${cat.color} w-12 h-12 rounded-full flex items-center justify-center text-2xl mb-2`}
+                  className={`${category.color} w-12 h-12 rounded-full flex items-center justify-center text-2xl mb-2`}
                 >
-                  {cat.icon}
+                  {category.icon}
                 </div>
-                <div className="text-sm font-semibold text-gray-900">{cat.name}</div>
-                <div className="text-lg font-bold text-blue-600">{cat.count}</div>
+                <div className="text-sm font-semibold text-gray-900">{category.name}</div>
+                <div className="text-lg font-bold text-blue-600">{category.count}</div>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Reviews */}
+        {/* ✅ Citizen Reviews (Always Visible) */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-20">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Citizen Reviews</h2>
-
           <div className="space-y-4">
-            {reviews.length > 0 ? (
-              reviews.map((r, i) => (
-                <div key={i} className="flex gap-3">
-                  <img
-                    src={r.avatar}
-                    alt={r.name}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-gray-900 text-sm">{r.name}</span>
-                      <div className="flex">
-                        {[...Array(5)].map((_, j) => (
-                          <span
-                            key={j}
-                            className={`text-sm ${
-                              j < r.rating ? "text-yellow-400" : "text-gray-300"
-                            }`}
-                          >
-                            ★
-                          </span>
-                        ))}
-                      </div>
+            {reviews.map((review, index) => (
+              <div key={index} className="flex gap-3">
+                <img
+                  src={review.avatar}
+                  alt={review.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-semibold text-gray-900 text-sm">
+                      {review.name}
+                    </span>
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <span
+                          key={i}
+                          className={`text-sm ${
+                            i < review.rating ? "text-yellow-400" : "text-gray-300"
+                          }`}
+                        >
+                          ★
+                        </span>
+                      ))}
                     </div>
-                    <p className="text-sm text-gray-600">{r.comment}</p>
                   </div>
+                  <p className="text-sm text-gray-600">{review.comment}</p>
                 </div>
-              ))
-            ) : (
-              <p className="text-gray-500 text-sm">No reviews yet.</p>
-            )}
+              </div>
+            ))}
           </div>
 
           {/* Write Review Button */}
           <button
-            onClick={() => navigate("/review")}
-            className="w-full mt-4 bg-blue-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
+            onClick={() => navigate("review")}
+            className="w-full mt-5 bg-blue-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
           >
             <Edit className="w-4 h-4" />
             Write Review
@@ -139,21 +155,21 @@ export default function HomeScreen() {
               <span className="text-xs font-medium">Home</span>
             </button>
             <button
-              onClick={() => navigate("/upload")}
+              onClick={() => navigate("upload")}
               className="flex flex-col items-center py-2 text-gray-400 hover:text-gray-600"
             >
               <div className="w-6 h-6 mb-1">📄</div>
               <span className="text-xs">Report</span>
             </button>
             <button
-              onClick={() => navigate("/track")}
+              onClick={() => navigate("track")}
               className="flex flex-col items-center py-2 text-gray-400 hover:text-gray-600"
             >
               <div className="w-6 h-6 mb-1">🔍</div>
               <span className="text-xs">Track</span>
             </button>
             <button
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate("profile")}
               className="flex flex-col items-center py-2 text-gray-400 hover:text-gray-600"
             >
               <div className="w-6 h-6 mb-1">👤</div>
