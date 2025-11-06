@@ -9,6 +9,7 @@ export default function UploadScreen() {
   const [isSaved, setIsSaved] = useState(false);
 
   const handlePhotoUpload = (e) => {
+
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -17,10 +18,57 @@ export default function UploadScreen() {
     }
   };
 
-  const handleSubmit = () => {
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
-  };
+  // const handleSubmit = () => {
+  //   setIsSaved(true);
+  //   setTimeout(() => setIsSaved(false), 3000);
+  // };
+  const handleSubmit = async () => {
+  if (!photo) {
+    alert("Please upload a photo first!");
+    return;
+  }
+
+  // Dynamically pick correct backend URL
+  const BASE_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:3000"
+      : "http://10.21.167.11:3000"; // your backend IP
+
+  try {
+    const formData = new FormData();
+    const blob = await fetch(photo).then((res) => res.blob());
+    formData.append("file", blob, "photo.jpg");
+
+    const res = await fetch(`${BASE_URL}/api/upload`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      navigate("success");
+      // ✅ Success message for user
+      setIsSaved(true);
+      alert("✅ Complaint submitted successfully!");
+      console.log("Uploaded File URL:", data.url);
+
+      // Clear fields after upload
+      setPhoto(null);
+      setDescription("");
+
+      // Hide message after a few seconds
+      setTimeout(() => setIsSaved(false), 3000);
+    } else {
+      alert("⚠️ Upload failed! Please try again.");
+    }
+  } catch (error) {
+    console.error("Upload error:", error);
+   
+  }
+};
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -117,14 +165,14 @@ export default function UploadScreen() {
               <span className="text-xs font-medium">Report</span>
             </button>
             <button
-              onClick={() => navigate("/track")}
+              onClick={() => navigate("track")}
               className="flex flex-col items-center py-2 text-gray-400 hover:text-gray-600"
             >
               <div className="w-6 h-6 mb-1">🔍</div>
               <span className="text-xs">Track</span>
             </button>
             <button
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate("profile")}
               className="flex flex-col items-center py-2 text-gray-400 hover:text-gray-600"
             >
               <div className="w-6 h-6 mb-1">👤</div>
